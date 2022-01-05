@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie App</title>
+    <style>
+        #container {
+            width: 80%;
+            margin: 100px auto;
+            background-color: lightcyan;
+            border-radius: 10px;
+            text-align: center;
+            padding: 50px;
+            border: 1px solid black;
+            font-family: "Roboto", sans-serif;
+        }
+        
+        #movie {
+            width: 30%;
+            line-height: 40px;
+            text-indent: 25px;
+        }
+        
+        #btn {
+            width: 20%;
+            height: 45px;
+            background-color: black;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <h1>Welcome to Movie Store</h1>
+        <input type="text" placeholder="Enter Movie Name" id="movie" />
+        <button id="btn" onclick="searchMovie()">Search</button>
+        <div id="data"><br /><br /></div>
+    </div>
+</body>
+
+</html>
+
+<script>
+    var div_data = document.getElementById("data");
+
+    async function searchMovie() {
+        try {
+            let movie = document.getElementById("movie").value;
+            let moviedata = await fetch(
+                `http://www.omdbapi.com/?t=${movie}&apikey=f2a42f69&type=movie`
+            );
+            // console.log(moviedata);
+            let display = await moviedata.json();
+            // console.log("display:", display);
+            if (display.Response == "True") {} else {
+                error();
+            }
+
+            div_data.innerHTML = "";
+            let p_title = document.createElement("h1");
+            p_title.innerHTML = "Title :-  " + display.Title;
+            //  p_title.style.fontSize="26px";
+            p_title.style.color = "red";
+
+            let p_year = document.createElement("p");
+            p_year.innerHTML = "Released Date  :-  " + display.Released;
+            p_year.style.fontSize = "22px";
+
+            let p_ratings = document.createElement("p");
+            p_ratings.innerHTML = "IMDB Ratings :-  " + display.imdbRating + " Stars";
+            p_ratings.style.fontSize = "24px";
+            p_ratings.style.color = "green";
+
+            if (display.imdbRating > 8.5) {
+                let recommend = document.createElement("h2");
+                recommend.innerHTML = "Recommended to Watch";
+                recommend.style.color = "gold";
+                //   console.log("HI")
+                p_ratings.append(recommend);
+            }
+
+            let p_genre = document.createElement("p");
+            p_genre.innerHTML = "Genre :-   " + display.Genre; //`${JSON.stringify(display)}`;
+            p_genre.style.fontSize = "24px";
+            p_genre.style.color = "blue";
+
+            let p_plot = document.createElement("p");
+            p_plot.innerHTML = "Movie Plot :-  " + display.Plot; //`${JSON.stringify(display)}`;
+            p_plot.style.fontSize = "22px";
+            p_plot.style.color = "orange";
+
+            let p_lang = document.createElement("p");
+            p_lang.innerHTML = "Language :-  " + display.Language; //`${JSON.stringify(display)}  //`${JSON.stringify(display)}`;
+            p_lang.style.fontSize = "22px";
+            p_lang.style.color = "limegreen";
+
+            let img = document.createElement("img");
+            img.src = display.Poster;
+            img.style.marginTop = "50px";
+            console.log("display:", display);
+
+            div_data.append(img, p_title, p_year, p_ratings, p_genre, p_lang, p_plot);
+
+            movie = document.getElementById("movie").value = "";
+        } catch (err) {
+            function error() {
+                div_data.innerHTML = "";
+                let gif = document.createElement("img");
+                gif.src =
+                    "https://c.tenor.com/tDZQ2tXTO_4AAAAM/dungeons-and-dragons-dnd.gif";
+                gif.style.marginTop = "50px";
+                div_data.append(gif);
+            }
+            console.log("err:", error());
+        }
+    }
+</script>
